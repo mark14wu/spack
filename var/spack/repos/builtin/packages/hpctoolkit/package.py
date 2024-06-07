@@ -21,7 +21,7 @@ class Hpctoolkit(AutotoolsPackage, MesonPackage):
     and attributes them to the full calling context in which they occur."""
 
     homepage = "http://hpctoolkit.org"
-    git = "https://gitlab.com/hpctoolkit/hpctoolkit.git"
+    git = "https://github.com/dolanzhao/hpctoolkit-unofficial-mirror.git"
     maintainers("mwkrentel")
 
     tags = ["e4s"]
@@ -182,7 +182,7 @@ class Hpctoolkit(AutotoolsPackage, MesonPackage):
     depends_on("zlib-api")
     depends_on("zlib+shared", when="^[virtuals=zlib-api] zlib")
 
-    depends_on("cuda", when="+cuda")
+    # depends_on("cuda", when="+cuda")
     depends_on("oneapi-level-zero", when="+level_zero")
     depends_on("oneapi-igc", when="+gtpin")
     depends_on("intel-gtpin", when="+gtpin")
@@ -319,8 +319,8 @@ class AutotoolsBuilder(spack.build_systems.autotools.AutotoolsBuilder):
         if spec.satisfies("@2022.10:"):
             args.append("--with-yaml-cpp=%s" % spec["yaml-cpp"].prefix)
 
-        if "+cuda" in spec:
-            args.append("--with-cuda=%s" % spec["cuda"].prefix)
+        # if "+cuda" in spec:
+        #     args.append("--with-cuda=%s" % spec["cuda"].prefix)
 
         if "+level_zero" in spec:
             args.append("--with-level0=%s" % spec["oneapi-level-zero"].prefix)
@@ -397,6 +397,7 @@ class MesonBuilder(spack.build_systems.meson.MesonBuilder):
             "-Drocm=" + ("enabled" if "+rocm" in spec else "disabled"),
             "-Dlevel0=" + ("enabled" if "+level_zero" in spec else "disabled"),
             "-Dgtpin=" + ("enabled" if "+gtpin" in spec else "disabled"),
+            "-Dtorch_monitor_dir=/home/hwu27/workspace/torch-monitor/build"
         ]
 
         if "@:2024.01" in spec:
@@ -434,8 +435,8 @@ class MesonBuilder(spack.build_systems.meson.MesonBuilder):
 
         cfg["properties"]["prefix_yaml_cpp"] = f"'''{spec['yaml-cpp'].prefix}'''"
 
-        if "+cuda" in spec:
-            cfg["properties"]["prefix_cuda"] = f"'''{spec['cuda'].prefix}'''"
+        # if "+cuda" in spec:
+        #     cfg["properties"]["prefix_cuda"] = f"'''{spec['cuda'].prefix}'''"
 
         if "+level_zero" in spec:
             cfg["properties"]["prefix_level0"] = f"'''{spec['oneapi-level-zero'].prefix}'''"
